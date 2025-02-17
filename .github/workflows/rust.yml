@@ -1,4 +1,6 @@
 name: Build evtx-tool
+permissions:
+  contents: read
 
 on:
   push:
