@@ -125,10 +125,12 @@ fn find_event_logs(input_path: String) -> Vec<PathBuf> {
                     match file_infer {
                         Ok(Some(file_type)) => match file_type.mime_type() {
                             "application/x-evtx" => evtx_list.push(current_file_name),
-                            _ => {}
+                            _ => {
+
+                            }
                         },
                         Err(e) => {
-                            eprintln!("{:?}", e);
+                            eprintln!("{:?} is not a valid evtx file", &current_file_name);
                         }
                         _ => {}
                     }
@@ -160,5 +162,23 @@ fn rename_event_logs(input_path: String) {
     match fs::rename(old_path, &new_path) {
         Ok(_) => println!("Renamed {:?} to {:?}", old_path, &new_path),
         Err(e) => println!("Error renaming file: {:?}", e),
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_get_event_log() {
+        let app_log = get_event_log("./samples/Application.evtx".to_string());
+        assert_eq!(app_log.unwrap().event_log_type, "Application");
+        let dirty_sec = get_event_log("./samples/2-system-Security-dirty.evtx".to_string());
+        assert_eq!(dirty_sec.unwrap().event_log_type, "Security");
+    }
+    #[test]
+    #[should_panic]
+    fn test_get_event_log_not_evtx() {
+        let not_log_file = get_event_log("./samples/Catfractal.jpg".to_string());
     }
 }
