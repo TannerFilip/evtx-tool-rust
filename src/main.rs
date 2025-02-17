@@ -1,17 +1,12 @@
-use clap::builder::Str;
 use clap::{Parser, Subcommand};
 use evtx::EvtxParser;
-use infer::{MatcherType, Type};
 use sanitize_filename;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::fs;
-use std::fs::File;
-use std::io;
 use std::io::prelude::*;
-use std::io::ErrorKind;
 use std::ops::Add;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct EventLog {
@@ -55,8 +50,12 @@ fn main() {
             input_path,
             output_path,
         } => archive_event_logs(input_path, output_path),
-        Commands::Rename { input_path } => { rename_event_logs(input_path); } ,
-        Commands::List { input_path } => { find_event_logs(input_path); }
+        Commands::Rename { input_path } => {
+            rename_event_logs(input_path);
+        }
+        Commands::List { input_path } => {
+            find_event_logs(input_path);
+        }
     }
 }
 
@@ -113,8 +112,10 @@ fn find_event_logs(input_path: String) -> Vec<PathBuf> {
     let mut evtx_list = Vec::new();
     let mut info = infer::Infer::new();
     info.add("application/x-evtx", "evtx", evtx_matcher);
+    let input_path_buf = PathBuf::from(&input_path);
+    let abs_path = input_path_buf.canonicalize().unwrap();
 
-    let directory = fs::read_dir(input_path).unwrap();
+    let directory = fs::read_dir(abs_path).unwrap();
     for file in directory {
         match file {
             Ok(f) => {
@@ -138,10 +139,13 @@ fn find_event_logs(input_path: String) -> Vec<PathBuf> {
             }
         }
     }
-    return evtx_list;
+    println!("{:?}", &evtx_list);
+    evtx_list
 }
 
-fn archive_event_logs(input_path: String, output_path: Option<String>) {}
+fn archive_event_logs(input_path: String, output_path: Option<String>) {
+    // __TODO__: Write this function
+}
 
 fn rename_event_logs(input_path: String) {
     let old_path = &input_path;
