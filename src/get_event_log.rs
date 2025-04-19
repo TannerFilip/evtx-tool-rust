@@ -1,7 +1,7 @@
-use std::path::PathBuf;
+use crate::EventLog;
 use evtx::EvtxParser;
 use serde_json::Value;
-use crate::EventLog;
+use std::path::PathBuf;
 
 pub fn get_event_log(input_path: String) -> Option<EventLog> {
     const EVENT_PATH: &str = "Event.System.Channel";

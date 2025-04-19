@@ -1,6 +1,6 @@
-use std::path::PathBuf;
-use std::fs;
 use crate::{get_event_log, EventLog};
+use std::fs;
+use std::path::PathBuf;
 
 pub fn rename_event_logs(input_path: String) {
     let old_path = &input_path;

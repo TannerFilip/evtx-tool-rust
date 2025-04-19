@@ -1,5 +1,5 @@
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 pub fn find_event_logs(input_path: String) -> Vec<PathBuf> {
     fn evtx_matcher(buf: &[u8]) -> bool {
